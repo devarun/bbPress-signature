@@ -19,7 +19,8 @@
 # Ignore everything in the "wp-content" directory, except the "better-bbpress-signatures plugin"
 wp-content/*
 !wp-content/plugins/
-
+wp-content/plugins/*
+!wp-content/plugins/better-bbpress-signatures/
 #Extras
 error_log
 db_transfer_helper.php
