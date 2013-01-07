@@ -39,8 +39,6 @@ URL: https://github.com/arunsparx/bbPress-signature
 
 == Changelog ==
 
-== Changelog ==
-
 = 1.0.0 =
 * First version of the plug-in
 * Tested with WordPress 3.4 and 3.5
