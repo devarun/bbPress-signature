@@ -12,7 +12,7 @@ Better bbPress Signature is signature software to add option for member signatur
 
 == Description ==
 
-This software enables option for adding signature for the members on board of a forum developed using bbPress. It has been tested with bbPress 2.2.2 and 2.2.3 relAn answer to that question.eases and works flawlessly.
+This software enables option for adding signature for the members on board of a forum developed using bbPress. It has been tested with bbPress 2.2.2 and 2.2.3 releases and works flawlessly.
 
 == Installation ==
 
@@ -28,7 +28,7 @@ This software enables option for adding signature for the members on board of a 
 
 Report all you bugs on wordpress.org mentioning my plugin.
 
-== Find latest builds on github ==
+= Find latest builds on github =
 
 URL: https://github.com/arunsparx/bbPress-signature
 
