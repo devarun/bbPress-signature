@@ -5,7 +5,7 @@
   Description: This plugin will add option for adding signature in the bbPress forum. The signature form will appear under the text area in topic form and reply form.
   Version: 0.1
   Author: Arun Singh
-  Author Email: arun@sparxtechnologies.com
+  Author Email: arun.aiemd@gmail.com
  */
 function b3p_signature_scripts(){
 	wp_enqueue_script('jquery');
@@ -24,7 +24,10 @@ if (!is_admin()) {
 } // end if/else
 add_action("wp_ajax_add_b3p_signature", "add_b3p_signature");
 add_action("wp_ajax_nopriv_add_b3p_signature", "add_b3p_signature");
-
+/*
+ * Function to add store members signature in database
+ * uses wordpress add_user_meta function for db interaction
+ */
 function add_b3p_signature() {
     global $wpdb;
     global $current_user;
@@ -32,28 +35,19 @@ function add_b3p_signature() {
     if (strlen($signature_text) > 250) {
         $response = "Sorry the signature is too long. Max limit 250 characters.";
     } else {
-        if (b3p_signature()) {
-            $wpdb->update(
-                    $wpdb->usermeta, array('meta_value' => $signature_text), array('user_id' => $current_user->ID, 'meta_key' => 'b3p_signature'), array('%s'), array('%d', '%s')
-            );
-            $response = "Your signature has been updated successfully! Changes will take effect on page refresh.";
-        } else {
-            $result = $wpdb->insert(
-                            $wpdb->usermeta, array(
-                        'user_id' => $current_user->ID,
-                        'meta_key' => 'b3p_signature',
-                        'meta_value' => $signature_text
-                            ), array(
-                        '%d',
-                        '%s',
-                        '%s',
-                            )
-            );
-            $response = "Your signature has been added successfully! Changes will take effect on page refresh.";
-        }
+    	$added = add_user_meta( $current_user->ID, 'b3p_signature', $signature_text, true );
+    	if($added){
+    		$response = "Your signature has been added successfully! Changes will take effect on page refresh.";
+    	}else{
+    		$response = "Something wrong happened from server side, please try again after a while.";
+    	}
     }
     die($response);
 }
+
+/*
+ * Function to add signature form in the front end
+ */
 
 function b3p_add_signature_form() {
     $form = '<div class="bbPress-signature"><p class="fl"><a href="javascript:;" class="button" id="b3p_show_signature"><span>Add/Edit Signature</span></a></p>';
@@ -65,20 +59,33 @@ function b3p_add_signature_form() {
     echo $form;
 }
 
+/*
+ * Function to retrieve current users signature from database
+ * uses wordpress get_user_meta function for db interaction
+ */
+
 function b3p_signature() {
     global $wpdb;
     global $current_user;
-    $user_signature = $wpdb->get_var($wpdb->prepare("SELECT meta_value FROM $wpdb->usermeta WHERE meta_key='b3p_signature' AND user_id= '$current_user->ID';"));
-    return stripslashes($user_signature);
+    $current_user_signature = get_user_meta($current_user->ID, 'b3p_signature', true);
+    return stripslashes($current_user_signature);
 }
+
+/*
+ * Function to retrieve reply authors signature from database
+ * uses wordpress get_user_meta function for db interaction
+ */
 
 function b3p_get_signature(){
-    $reply_author = get_the_author_meta( 'ID' );
+    	$reply_author = get_the_author_meta( 'ID' );
     global $wpdb;
-    $user_signature = $wpdb->get_var($wpdb->prepare("SELECT meta_value FROM $wpdb->usermeta WHERE meta_key='b3p_signature' AND user_id= '$reply_author';"));
+    $user_signature = get_user_meta($reply_author, 'b3p_signature', true);
     return stripslashes($user_signature);
 }
 
+/*
+ * Function to embed authors signature in the reply content
+ */
 
 function embed_b3p_signature($content = '') {
         $content .= '<hr />'.b3p_get_signature();
