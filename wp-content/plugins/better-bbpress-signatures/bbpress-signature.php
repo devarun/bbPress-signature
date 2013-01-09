@@ -1,11 +1,11 @@
 <?php
 /*
   Plugin Name: Better bbPress Signature
-  Plugin URI: http://codeaholic.wordpress.com/
+  Plugin URI: http://www.sparxitsolutions.com/
   Description: This plugin will add option for adding signature in the bbPress forum. The signature form will appear under the text area in topic form and reply form.
   Version: 0.1
   Author: Arun Singh
-  Author Email: arun.aiemd@gmail.com
+  Author Email: arun@sparxtechnologies.com
  */
 function b3p_signature_scripts(){
 	wp_enqueue_script('jquery');

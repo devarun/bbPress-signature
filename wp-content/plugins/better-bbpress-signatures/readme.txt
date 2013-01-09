@@ -1,5 +1,5 @@
 === Better bbPress Signaturs ===
-Contributors: arun_singh
+Contributors: arun_singh,sparxit
 Donate link: 
 Tags: forums, discussion, multisite, bbPress, signature, signatures
 Requires at least: 3.4
