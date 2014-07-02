@@ -3,18 +3,18 @@
   Plugin Name: Better bbPress Signature
   Plugin URI: http://www.sparxitsolutions.com/
   Description: This plugin will add option for adding signature in the bbPress forum. The signature form will appear under the text area in topic form and reply form.
-  Version: 0.1
+  Version: 1.2.0
   Author: Arun Singh
   Author Email: arun@sparxtechnologies.com
  */
 function b3p_signature_scripts(){
 	wp_enqueue_script('jquery');
-    wp_register_script('b3p_signature', WP_PLUGIN_URL . '/better-bbpress-signatures/js/bbpress-signature.js', $deps, $ver, TRUE);
+    wp_register_script('b3p_signature', WP_PLUGIN_URL . '/better-bbpress-signature/js/bbpress-signature.js', array('jquery'), '1.0', TRUE);
     wp_enqueue_script('b3p_signature');
     wp_localize_script('b3p_signature', 'formAjax', array('ajaxurl' => admin_url('admin-ajax.php')));
 }
 function b3p_signature_styles(){
-	wp_register_style('b3p_signature_css', WP_PLUGIN_URL . '/better-bbpress-signatures/css/bbpress-signature.css', $deps, $ver, false);
+	wp_register_style('b3p_signature_css', WP_PLUGIN_URL . '/better-bbpress-signature/css/bbpress-signature.css', '', '1.0', false);
     wp_enqueue_style('b3p_signature_css');
 }
 
@@ -35,11 +35,12 @@ function add_b3p_signature() {
     if (strlen($signature_text) > 250) {
         $response = "Sorry the signature is too long. Max limit 250 characters.";
     } else {
-    	$added = add_user_meta( $current_user->ID, 'b3p_signature', $signature_text, true );
+    	$prev_signature = get_user_meta($current_user->ID, 'b3p_signature', true);
+    	$added = update_user_meta( $current_user->ID, 'b3p_signature', $signature_text, $prev_signature );
     	if($added){
     		$response = "Your signature has been added successfully! Changes will take effect on page refresh.";
     	}else{
-    		$response = "Something wrong happened from server side, please try again after a while.";
+    		$response = "Something wrong happened on server side, please try again after a while.";
     	}
     }
     die($response);
@@ -96,4 +97,3 @@ add_filter('bbp_get_reply_content', 'embed_b3p_signature');
 add_filter('bbp_get_topic_content', 'embed_b3p_signature');
 add_action('bbp_theme_before_reply_form_tags','b3p_add_signature_form');
 add_action('bbp_theme_before_topic_form_tags','b3p_add_signature_form');
-?>

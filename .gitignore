@@ -21,6 +21,7 @@ wp-content/*
 !wp-content/plugins/
 wp-content/plugins/*
 !wp-content/plugins/better-bbpress-signatures/
+!wp-content/plugins/better-bbpress-signature/
 #Extras
 error_log
 db_transfer_helper.php
