@@ -5,68 +5,47 @@
  */
 class GeneralSettings {
 
-    function __construct() {
+    private $settings = array();
+
+    function __construct($fields = array()) {
+        $this->settings = $fields;
         add_action('admin_init', array(&$this, 'init'));
     }
 
     function init() {
         add_settings_section(
-                'b3p_setting_section', '<hr / id="b3p-settings-page">Better bbPress Signature Settings', array(&$this, 'b3p_setting_section'), 'bbpress'
+                'b3p_setting_section', '<hr id="b3p-settings-page" />Better bbPress Signature Settings', array(&$this, 'b3p_setting_section'), 'bbpress'
         );
+        foreach ($this->settings as $fieldname => $field) {
+            $args = array();
+            $args['id'] = $fieldname;
+            $args['type'] = $field[1];
+            add_settings_field($fieldname, $field[0], array(&$this, 'b3p_setting_field'), $field[2], $field[3], $args);
+            register_setting($field[2], $fieldname);
+        }
     }
 
     function b3p_setting_section() {
         echo '<p>Better bbPress Signature messages</p>';
     }
-
-    function b3p_add_setting($id, $title, $page, $type, $section, $args) {
-        require_once(ABSPATH . '/wp-admin/includes/plugin.php');
-        require_once(ABSPATH . WPINC . '/pluggable.php');
-        global $param;
-        $param = $type;
-
-        add_settings_field($id, $title, array(&$this, 'b3p_setting_field'), $page, $section, $args);
-
-        register_setting($page, $id);
-    }
-
-    function b3p_setting_field() {
-        global $param;
-
-        echo $param . '<input name="b3p_character_limit" id="b3p_character_limit" type="text" value="' . get_option('b3p_character_limit') . '" class="code" />';
+    /**
+     * Create fields for the settings
+     * @param array $args
+     */
+    function b3p_setting_field($args) {
+        echo '<input name="' . $args["id"] . '" id="' . $args["id"] . '" type="' . $args["type"] . '" value="' . get_option($args["id"]) . '" class="code" />';
     }
 
 }
 
-$setting = new GeneralSettings();
-$setting->b3p_add_setting('b3p_character_limit',
-		'Character limit for signature',
-		'text',
-		'bbpress',
-		'b3p_setting_section', array());
-/*function b3p_settings_api_init() {
- 	
- 	
- 	add_settings_field(
-		'b3p_character_limit',
-		'Character limit for signature',
-		'b3p_setting',
-		'bbpress',
-		'b3p_setting_section'
-	);
- 	
- 	register_setting( 'bbpress', 'b3p_character_limit' );
- } // eg_settings_api_init()
- 
- add_action( 'admin_init', 'b3p_settings_api_init' );
- 
-
- 
- function b3p_setting_section() {
- 	echo '<p>Better bbPress Signature messages</p>';
- }
- 
- 
- function b3p_setting() {
- 	echo '<input name="b3p_character_limit" id="b3p_character_limit" type="text" value="'.get_option( 'b3p_character_limit' ).'" class="code" />';
- } */
+$setting = new GeneralSettings(
+        array(
+    'b3p_character_limit' => array('Character limit for signature',
+        'text',
+        'bbpress',
+        'b3p_setting_section'),
+    'b3p_character_limit_error' => array('Error message for character limit',
+        'text',
+        'bbpress',
+        'b3p_setting_section')
+        ));
