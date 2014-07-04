@@ -46,19 +46,19 @@ function add_b3p_signature() {
     global $wpdb;
     global $current_user;
     $signature_text = $_REQUEST['signature_text'];
-    if (strlen($signature_text) > 250) {
-        $response = __("Sorry the signature is too long. Max limit 250 characters.", 'b3p-signatures');
+    if (strlen($signature_text) > get_option('b3p_character_limit')) {
+        $response = __(get_option('b3p_character_limit_error'), 'b3p-signatures');
     } else {
         $prev_signature = get_user_meta($current_user->ID, 'b3p_signature', true);
-        if (!$signature_text == $prev_signature)
+        if ($signature_text != $prev_signature)
             $added = update_user_meta($current_user->ID, 'b3p_signature', $signature_text, $prev_signature);
         else
-            die(__('Nothing to update', 'b3p-signatures'));
+            die(__(get_option('b3p_no_update_error'), 'b3p-signatures'));
 
         if ($added) {
-            $response = __("Your signature has been added successfully! Changes will take effect on page refresh.", 'b3p-signatures');
+            $response = __(get_option('b3p_signature_updated'), 'b3p-signatures');
         } else {
-            $response = __("Something wrong happened on server side, please try again after a while.", 'b3p-signatures');
+            $response = __(get_option('b3p_server_error'), 'b3p-signatures');
         }
     }
     die($response);

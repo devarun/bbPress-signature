@@ -28,12 +28,13 @@ class GeneralSettings {
     function b3p_setting_section() {
         echo '<p>Better bbPress Signature messages</p>';
     }
+
     /**
      * Create fields for the settings
      * @param array $args
      */
     function b3p_setting_field($args) {
-        echo '<input name="' . $args["id"] . '" id="' . $args["id"] . '" type="' . $args["type"] . '" value="' . get_option($args["id"]) . '" class="code" />';
+        echo '<input name="' . $args["id"] . '" id="' . $args["id"] . '" type="' . $args["type"] . '" value="' . get_option($args["id"]) . '" class="regular-text code" />';
     }
 
 }
@@ -45,6 +46,18 @@ $setting = new GeneralSettings(
         'bbpress',
         'b3p_setting_section'),
     'b3p_character_limit_error' => array('Error message for character limit',
+        'text',
+        'bbpress',
+        'b3p_setting_section'),
+    'b3p_no_update_error' => array('Error message when nothing is updated',
+        'text',
+        'bbpress',
+        'b3p_setting_section'),
+    'b3p_signature_updated' => array('Message on signature update',
+        'text',
+        'bbpress',
+        'b3p_setting_section'),
+    'b3p_server_error' => array('Error message when server failed to update / timed out',
         'text',
         'bbpress',
         'b3p_setting_section')
