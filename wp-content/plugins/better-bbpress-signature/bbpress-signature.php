@@ -47,18 +47,18 @@ function add_b3p_signature() {
     global $current_user;
     $signature_text = $_REQUEST['signature_text'];
     if (strlen($signature_text) > get_option('b3p_character_limit')) {
-        $response = __(get_option('b3p_character_limit_error'), 'b3p-signatures');
+        $response = __('<span class="b3p-error">'.get_option('b3p_character_limit_error').'</span>', 'b3p-signatures');
     } else {
         $prev_signature = get_user_meta($current_user->ID, 'b3p_signature', true);
         if ($signature_text != $prev_signature)
             $added = update_user_meta($current_user->ID, 'b3p_signature', $signature_text, $prev_signature);
         else
-            die(__(get_option('b3p_no_update_error'), 'b3p-signatures'));
+            die(__('<span class="b3p-error">'.get_option('b3p_no_update_error').'</span>', 'b3p-signatures'));
 
         if ($added) {
-            $response = __(get_option('b3p_signature_updated'), 'b3p-signatures');
+            $response = __('<span class="b3p-success">'.get_option('b3p_signature_updated').'</span>', 'b3p-signatures');
         } else {
-            $response = __(get_option('b3p_server_error'), 'b3p-signatures');
+            $response = __('<span class="b3p-error">'.get_option('b3p_server_error').'</span>', 'b3p-signatures');
         }
     }
     die($response);
@@ -69,7 +69,7 @@ function add_b3p_signature() {
  */
 
 function b3p_add_signature_form() {
-    $form = '<div class="bbPress-signature"><p class="fl"><a href="javascript:;" class="button" id="b3p_show_signature"><span>'.__('Add/Edit Signature', 'b3p-signatures').'</span></a></p>';
+    $form = '<div class="bbPress-signature"><p class="fl"><a href="javascript:;" class="button" data-status="hidden" id="b3p_show_signature"><span>'.__('Add / Edit Signature', 'b3p-signatures').'</span></a></p>';
     $form .= '<div style="display: none;" id="b3p_forum_signature">';
     $form .= '<textarea id="b3p_signature" >' . b3p_signature() . '</textarea>';
     $form .= '<p class="fr"><a href="javascript:;" class="button" id="add_signature"><span>'.__('UPDATE', 'b3p-signatures').'</span></a></p>';
