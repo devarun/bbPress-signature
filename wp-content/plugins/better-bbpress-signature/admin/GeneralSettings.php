@@ -60,5 +60,17 @@ $setting = new GeneralSettings(
     'b3p_server_error' => array('Error message when server failed to update / timed out',
         'text',
         'bbpress',
+        'b3p_setting_section'),
+    'b3p_add_button' => array('Text for Add / Edit Signature Button',
+        'text',
+        'bbpress',
+        'b3p_setting_section'),
+    'b3p_hide_button' => array('Text for hide form button',
+        'text',
+        'bbpress',
+        'b3p_setting_section'),
+    'b3p_update_button' => array('Text for update signature button',
+        'text',
+        'bbpress',
         'b3p_setting_section')
         ));
