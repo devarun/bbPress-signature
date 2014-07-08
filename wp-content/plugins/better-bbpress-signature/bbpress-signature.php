@@ -104,12 +104,12 @@ function b3p_add_signature_form() {
     $msg = isset($_GET['b3p_message_id']) ? $b3p_message[$_GET['b3p_message_id']] : '';
     $form = '<div class="bbPress-signature">';
     if(get_option('b3p_disable_javascript')){
-        $form .= '<p><input name="b3p_update_signature" id="b3p_update_signature" type="checkbox" value="yes" class="code" />'.'<label for="bbp_topic_subscription">' . __(get_option('b3p_add_button'), 'b3p-signatures') . '</label></p>';
+        $form .= '<p><strong>' . __(get_option('b3p_add_button'), 'b3p-signatures') . '</strong></p><p><input name="b3p_update_signature" id="b3p_update_signature" type="checkbox" value="yes" class="code" />'.'<label for="bbp_topic_subscription">Update Signature</label></p>';
     }else{
     $form .= '<p class="fl"><button type="button" class="button" data-status="hidden" id="b3p_show_signature"><span>' . __(get_option('b3p_add_button'), 'b3p-signatures') . '</span></button></p>';
     }
     $form .= '<div id="b3p_forum_signature">';
-    $form .= '<textarea name="b3p_signature" id="b3p_signature" rows="10" >' . b3p_signature() . '</textarea>';
+    $form .= '<textarea name="b3p_signature" id="b3p_signature" rows="5" >' . b3p_signature() . '</textarea>';
     $form .= '<p class="fr"><button type="submit" onclick="return false;" style="display:none" class="button" id="add_signature"><span>' . __(get_option('b3p_update_button'), 'b3p-signatures') . '</span></button></p>';
     $form .= '<p class="fl" id="bbps_message">' . $msg . '</p>';
     $form .= '</div></div>';
