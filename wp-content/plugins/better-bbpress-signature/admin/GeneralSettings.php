@@ -26,7 +26,7 @@ class GeneralSettings {
     }
 
     function b3p_setting_section() {
-        echo '<p>Better bbPress Signature messages</p>';
+        echo '<p>Better bbPress Signature Settings</p>';
     }
 
     /**
@@ -34,13 +34,31 @@ class GeneralSettings {
      * @param array $args
      */
     function b3p_setting_field($args) {
-        echo '<input name="' . $args["id"] . '" id="' . $args["id"] . '" type="' . $args["type"] . '" value="' . get_option($args["id"]) . '" class="regular-text code" />';
+        switch ($args["type"]) {
+            case 'text':
+                echo '<input name="' . $args["id"] . '" id="' . $args["id"] . '" type="text" value="' . get_option($args["id"]) . '" class="regular-text code" />';
+                break;
+            case 'checkbox':
+                if(get_option($args["id"]) == 1){
+                    $checked = "checked='checked'";
+                }else{
+                    $checked = '';
+                }
+                echo '<input name="' . $args["id"] . '" id="' . $args["id"] . '" '.$checked.'  type="checkbox" value="1" class="code" />';
+                break;
+            default:
+                break;
+        }
     }
 
 }
 
 $setting = new GeneralSettings(
         array(
+    'b3p_disable_javascript' => array('Disable JavaScript for Signature',
+        'checkbox',
+        'bbpress',
+        'b3p_setting_section'),
     'b3p_character_limit' => array('Character limit for signature',
         'text',
         'bbpress',

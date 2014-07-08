@@ -21,10 +21,9 @@ global $b3p_message;
 $b3p_message = array(
     '101' => __('<span class="b3p-success">' . get_option('b3p_signature_updated') . '</span>', 'b3p-signatures'),
     '102' => __('<span class="b3p-error">' . get_option('b3p_no_update_error') . '</span>', 'b3p-signatures'),
-    '103' => __('<span class="b3p-error">' . get_option('b3p_server_error') . '</span>', 'b3p-signatures')
+    '103' => __('<span class="b3p-error">' . get_option('b3p_server_error') . '</span>', 'b3p-signatures'),
+    '104' =>  __('<span class="b3p-error">' . get_option('b3p_character_limit_error') . '</span>', 'b3p-signatures')
 );
-
-
 
 function b3p_signature_scripts() {
     wp_enqueue_script('jquery');
@@ -39,7 +38,9 @@ function b3p_signature_styles() {
 }
 
 if (!is_admin()) {
+    if(!get_option('b3p_disable_javascript')){
     add_action('wp_enqueue_scripts', 'b3p_signature_scripts');
+    }
     add_action('wp_enqueue_scripts', 'b3p_signature_styles');
 } // end if/else
 add_action("wp_ajax_add_b3p_signature", "add_b3p_signature");
@@ -50,21 +51,18 @@ add_action("wp_ajax_nopriv_add_b3p_signature", "add_b3p_signature");
  * uses wordpress add_user_meta function for db interaction
  */
 
-$msg[$_REQUEST['msg']];
-
 function add_b3p_signature() {
     global $b3p_msg_code;
     global $b3p_message;
-    global $wpdb;
     global $current_user;
     if (isset($_REQUEST['doing_ajax']) && $_REQUEST['doing_ajax'])
         $signature_text = $_REQUEST['signature_text'];
-    else if (isset($_POST['b3p_signature']) && $_POST['b3p_signature'])
+    else if (isset($_POST['b3p_signature']) && $_POST['b3p_signature'] && isset ($_POST['b3p_update_signature']) && $_POST['b3p_update_signature'] == 'yes')
         $signature_text = $_POST['b3p_signature'];
     else
         return;
     if (strlen($signature_text) > get_option('b3p_character_limit')) {
-        $response = __('<span class="b3p-error">' . get_option('b3p_character_limit_error') . '</span>', 'b3p-signatures');
+        $b3p_msg_code = '104';
     } else {
         $prev_signature = get_user_meta($current_user->ID, 'b3p_signature', true);
         $added = update_user_meta($current_user->ID, 'b3p_signature', $signature_text, $prev_signature);
@@ -79,8 +77,9 @@ function add_b3p_signature() {
     }
 
     add_filter('bbp_new_reply_redirect_to', "b3p_messages");
-    if (isset($_REQUEST['doing_ajax']) && $_REQUEST['doing_ajax'])
+    if (isset($_REQUEST['doing_ajax']) && $_REQUEST['doing_ajax']) {
         die($b3p_message[$b3p_msg_code]);
+    }
 }
 
 function b3p_messages($reply_url, $redirect_to, $reply_id) {
@@ -102,11 +101,17 @@ add_action('bbp_new_topic_post_extras', 'add_b3p_signature');
 
 function b3p_add_signature_form() {
     global $b3p_message;
-    $form = '<div class="bbPress-signature"><p class="fl"><button type="button" class="button" data-status="hidden" id="b3p_show_signature"><span>' . __(get_option('b3p_add_button'), 'b3p-signatures') . '</span></button></p>';
+    $msg = isset($_GET['b3p_message_id']) ? $b3p_message[$_GET['b3p_message_id']] : '';
+    $form = '<div class="bbPress-signature">';
+    if(get_option('b3p_disable_javascript')){
+        $form .= '<p><input name="b3p_update_signature" id="b3p_update_signature" type="checkbox" value="yes" class="code" />'.'<label for="bbp_topic_subscription">' . __(get_option('b3p_add_button'), 'b3p-signatures') . '</label></p>';
+    }else{
+    $form .= '<p class="fl"><button type="button" class="button" data-status="hidden" id="b3p_show_signature"><span>' . __(get_option('b3p_add_button'), 'b3p-signatures') . '</span></button></p>';
+    }
     $form .= '<div id="b3p_forum_signature">';
     $form .= '<textarea name="b3p_signature" id="b3p_signature" rows="10" >' . b3p_signature() . '</textarea>';
     $form .= '<p class="fr"><button type="submit" onclick="return false;" style="display:none" class="button" id="add_signature"><span>' . __(get_option('b3p_update_button'), 'b3p-signatures') . '</span></button></p>';
-    $form .= '<p class="fl" id="bbps_message">' . isset($_GET['b3p_message_id'])?$b3p_message[$_GET['b3p_message_id']]:'' . '</p>';
+    $form .= '<p class="fl" id="bbps_message">' . $msg . '</p>';
     $form .= '</div></div>';
     echo $form;
 }
@@ -117,7 +122,6 @@ function b3p_add_signature_form() {
  */
 
 function b3p_signature() {
-    global $wpdb;
     global $current_user;
     $current_user_signature = get_user_meta($current_user->ID, 'b3p_signature', true);
     return stripslashes($current_user_signature);
@@ -130,7 +134,6 @@ function b3p_signature() {
 
 function b3p_get_signature() {
     $reply_author = get_the_author_meta('ID');
-    global $wpdb;
     $user_signature = get_user_meta($reply_author, 'b3p_signature', true);
     return stripslashes($user_signature);
 }
